@@ -3,8 +3,12 @@ import googlemaps
 import pprint
 
 
-#create a pretty printer for displaying gmaps request results (for debugging/altering the code dealing with gmaps result)
-pp = pprint.PrettyPrinter(indent=4)
+NUMBER_OF_ADDRESSES_TO_PRINT = 10
+
+#get gmaps client key from passwords file
+GOOGLEMAPS_CLIENT_KEY = open("passwords.txt", 'r').read()
+
+
 
 
 
@@ -15,28 +19,28 @@ pp = pprint.PrettyPrinter(indent=4)
 header = pd.read_csv('properties_head_2016.csv', nrows=0)
 
 #import first <nrows> rows of properties dataset, use header for header names (this is needed if we want to increase paramter skiprows)
-df = pd.read_csv("properties_head_2016.csv", names=header, skiprows=1, nrows = 10 )
+df = pd.read_csv("properties_head_2016.csv", names=header, skiprows=1, nrows = NUMBER_OF_ADDRESSES_TO_PRINT )
 
 #make separate df with just lat and lng values
 my_df = df[['latitude', 'longitude']]
 
 
 
-#get gmaps client key from text file
-gmaps_key = open("passwords.txt", 'r').read()
+
 #instantiate the gmaps api/client
-gmaps = googlemaps.Client(key = gmaps_key)
+gmaps = googlemaps.Client(key = GOOGLEMAPS_CLIENT_KEY)
 
 
 
+
+#create a pretty printer for displaying gmaps request results (for debugging/altering the code dealing with gmaps result)
+#pp = pprint.PrettyPrinter(indent=4)
 
 
 #make lists for appending city names and state abbreviations (corrwsponds to commented out code in for loop below)
 #cities = [] 
 #states = []
 #index_errors = 0
-
-
 for i in range(len(my_df)):
 	result = gmaps.reverse_geocode((float(my_df.iloc[i]['latitude'])/1000000, float(my_df.iloc[i]['longitude'])/1000000)) 
 
